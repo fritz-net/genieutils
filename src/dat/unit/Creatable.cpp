@@ -41,6 +41,7 @@ Creatable::~Creatable()
 void Creatable::setGameVersion(GameVersion gv)
 {
   ISerializable::setGameVersion(gv);
+  updateGameVersion(TrainLocations);
 }
 
 unsigned short Creatable::getResourceCostsSize()
@@ -53,12 +54,29 @@ void Creatable::serializeObject(void)
   GameVersion gv = getGameVersion();
 
   serializeSub<ResourceCost>(ResourceCosts, 3);
-  serialize<int16_t>(TrainTime);
-  serialize<int16_t>(TrainLocationID);
-  serialize<uint8_t>(ButtonID);
+  
+  if (gv >= GV_C29 && gv <= GV_LatestDE2)
+  {
+    int16_t train_location_count;
+    serializeSize<int16_t>(train_location_count, TrainLocations.size());
+    serializeSub<unit::TrainLocation>(TrainLocations, train_location_count);
+  }
+  else
+  {
+    serializeSub<unit::TrainLocation>(TrainLocations, 1);
+  }
 
   if (gv >= GV_AoEB) // 7.01
   {
+    // 18/02/25: Copy Hotkey value which was before stored in Unit.h in the first available train location
+    if (gv < GV_C30)
+    {
+      // Handle untrainable units from older versions
+      if (TrainLocations.empty())
+        TrainLocations.emplace_back();
+      TrainLocations[0].HotKeyID = HotKeyFromUnit;
+    }
+
     if (gv >= GV_AoKE3) // 9.07
     {
       serialize<float>(RearAttackModifier);
@@ -80,35 +98,38 @@ void Creatable::serializeObject(void)
             if (gv >= GV_C17)
             {
               serialize<int16_t>(HeroGlowGraphic);
-              if (gv >= GV_C26)
-              {
-                serialize<int16_t>(IdleAttackGraphic);
-              }
             }
+            if (gv >= GV_C26)
+            {
+              serialize<int16_t>(IdleAttackGraphic);
+            }
+
             serialize<float>(MaxCharge);
             serialize<float>(RechargeRate);
             serialize<int16_t>(ChargeEvent);
             serialize<int16_t>(ChargeType);
+            if (gv >= GV_C23)
+            {
+              serialize<int16_t>(ChargeTarget);
+            }
+
+            if (gv >= GV_C25)
+            {
+              serialize<int32_t>(ChargeProjectileUnit);
+              serialize<uint8_t>(AttackPriority);
+              serialize<float>(InvulnerabilityLevel);
+            }
+
+            if (gv >= GV_C24)
+            {
+              serialize<int16_t>(ButtonIconID);
+              serialize<int32_t>(ButtonShortTooltipID);
+              serialize<int32_t>(ButtonExtendedTooltipID);
+              serialize<int16_t>(ButtonHotkeyAction);
+            }
 
             if (gv >= GV_C19)
             {
-              if (gv >= GV_C23)
-              {
-                serialize<int16_t>(ChargeTarget);
-                if (gv >= GV_C24)
-                {
-                  if (gv >= GV_C25)
-                  {
-                    serialize<int32_t>(ChargeProjectileUnit);
-                    serialize<uint8_t>(AttackPriority);
-                    serialize<float>(InvulnerabilityLevel);
-                  }
-                  serialize<int16_t>(ButtonIconID);
-                  serialize<int32_t>(ButtonShortTooltipID);
-                  serialize<int32_t>(ButtonExtendedTooltipID);
-                  serialize<int16_t>(ButtonHotkeyAction);
-                }
-              }
               serialize<float>(MinConversionTimeMod);
               serialize<float>(MaxConversionTimeMod);
               serialize<float>(ConversionChanceMod);

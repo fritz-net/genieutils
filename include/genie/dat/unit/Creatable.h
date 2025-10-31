@@ -25,6 +25,7 @@
 
 #include "genie/file/ISerializable.h"
 #include "../ResourceUsage.h"
+#include "TrainLocation.h"
 
 namespace genie
 {
@@ -44,9 +45,7 @@ public:
   typedef ResourceUsage<int16_t, int16_t, int16_t> ResourceCost;
 
   std::vector<ResourceCost> ResourceCosts;
-  int16_t TrainTime = 0;
-  int16_t TrainLocationID = -1;
-  uint8_t ButtonID = 0;
+  std::vector<unit::TrainLocation> TrainLocations;
   float RearAttackModifier = 0;
   float FlankAttackModifier = 0;
   uint8_t CreatableType = 0;
@@ -93,6 +92,9 @@ public:
   float MinConversionTimeMod = 0;
   float MaxConversionTimeMod = 0;
   float ConversionChanceMod = 0;
+
+  int32_t HotKeyFromUnit = 16000;
+
 
 protected:
   virtual void serializeObject(void);

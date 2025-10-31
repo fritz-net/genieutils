@@ -94,7 +94,15 @@ void DatFile::serializeObject(void)
   // Handle all different versions while in development.
   if (getGameVersion() == GV_C2) // 5.8
   {
-    if ("VER 8.4" == FileVersion)
+    if ("VER 8.8" == FileVersion)
+      setGameVersion(GV_C31);  
+    else if ("VER 8.7" == FileVersion)
+      setGameVersion(GV_C30);
+    else if ("VER 8.6" == FileVersion)
+      setGameVersion(GV_C29);
+    else if ("VER 8.5" == FileVersion)
+      setGameVersion(GV_C28);
+    else if ("VER 8.4" == FileVersion)
       setGameVersion(GV_C27);
     else if ("VER 8.3" == FileVersion)
       setGameVersion(GV_C26);

@@ -124,7 +124,16 @@ void Unit::serializeObject(void)
   {
     serialize<int32_t>(LanguageDLLHelp);
     serialize<int32_t>(LanguageDLLHotKeyText);
-    serialize<int32_t>(HotKey);
+
+    if (gv < GV_C30 && isOperation(OP_READ))
+    {
+      int32_t hotkeyValue;
+      serialize<int32_t>(hotkeyValue);
+      if (Type >= UT_Creatable) {
+        Creatable.HotKeyFromUnit = hotkeyValue;
+      }
+    }
+
     serialize<uint8_t>(Recyclable);
     serialize<uint8_t>(EnableAutoGather);
     serialize<uint8_t>(CreateDoppelgangerOnDeath);

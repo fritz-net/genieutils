@@ -37,6 +37,8 @@ void Tech::setGameVersion(GameVersion gv)
 {
   ISerializable::setGameVersion(gv);
 
+  updateGameVersion(ResearchLocations);
+
   RequiredTechs.resize(getRequiredTechsSize(), -1);
 }
 
@@ -65,7 +67,9 @@ void Tech::serializeObject(void)
     serialize<int16_t>(FullTechMode); // 10.77
   }
 
-  serialize<int16_t>(ResearchLocation);
+  if (gv < GV_C31)
+    serialize<int16_t>(ResearchLocation);
+
   if (gv >= GV_MATT)
   {
     if (gv <= GV_LatestDE2 && gv >= GV_C18)
@@ -81,16 +85,25 @@ void Tech::serializeObject(void)
       LanguageDLLDescription = LanguageDLLDescriptionU16;
     }
   }
-  serialize<int16_t>(ResearchTime);
+
+  if (gv < GV_C31)
+    serialize<int16_t>(ResearchTime);
+
   serialize<int16_t>(EffectID);
   serialize<int16_t>(Type);
   serialize<int16_t>(IconID);
-  serialize<uint8_t>(ButtonID);
+
+  if (gv < GV_C31)
+    serialize<uint8_t>(ButtonID);
+
   if (gv >= GV_AoEB)
   {
     serialize<int32_t>(LanguageDLLHelp);
     serialize<int32_t>(LanguageDLLTechTree);
-    serialize<int32_t>(HotKey);
+
+    // deprecated for research locations
+    if (gv < GV_C31)
+      serialize<int32_t>(HotKey);
   }
 
   if (gv > GV_LatestTap && gv < GV_C2 || gv < GV_Tapsa || gv > GV_LatestDE2)
@@ -113,6 +126,26 @@ void Tech::serializeObject(void)
   if (gv <= GV_LatestDE2 && gv >= GV_C15)
   {
     serialize<uint8_t>(Repeatable);
+  }
+
+  if (gv >= GV_C31 && gv <= GV_LatestDE2)
+  {
+    int16_t research_location_count;
+    serializeSize<int16_t>(research_location_count, ResearchLocations.size());
+    serializeSub<tech::ResearchLocation>(ResearchLocations, research_location_count);
+  }
+  else
+  {
+    if (isOperation(Operation::OP_READ))
+    {
+      auto loc = tech::ResearchLocation();
+      loc.ButtonID = ButtonID;
+      loc.ResearchTime = ResearchTime;
+      loc.HotKeyID = HotKey;
+      loc.LocationID = ResearchLocation;
+
+      ResearchLocations.push_back(loc);
+    }
   }
 }
 

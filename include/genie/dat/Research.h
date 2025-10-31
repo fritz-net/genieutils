@@ -22,6 +22,7 @@
 #define GENIE_RESEARCH_H
 #include "genie/file/ISerializable.h"
 #include "ResourceUsage.h"
+#include "genie/dat/ResearchLocation.h"
 
 namespace genie
 {
@@ -103,6 +104,8 @@ public:
   std::string Name2 = "";
 
   uint8_t Repeatable = false;
+
+  std::vector<tech::ResearchLocation> ResearchLocations;
 
 private:
   virtual void serializeObject(void);

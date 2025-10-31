@@ -186,6 +186,12 @@
     <ClInclude Include="include\genie\resource\SpriteFile.h">
       <Filter>Sprites</Filter>
     </ClInclude>
+    <ClInclude Include="include\genie\dat\unit\TrainLocation.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\genie\dat\ResearchLocation.h">
+      <Filter>Data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\file\Compressor.cpp">
@@ -343,6 +349,12 @@
     </ClCompile>
     <ClCompile Include="src\resource\SmxFrame.cpp">
       <Filter>Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat\unit\TrainLocation.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dat\ResearchLocation.cpp">
+      <Filter>Data</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
