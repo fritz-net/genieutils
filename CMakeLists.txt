@@ -84,6 +84,7 @@ endif(${GU_LANG_SUPPORT})
 
 set(DAT_SRC
     src/dat/Research.cpp 
+    src/dat/ResearchLocation.cpp
    
     src/dat/Civ.cpp
     src/dat/TechageEffect.cpp
@@ -118,6 +119,7 @@ set(DAT_SRC
     src/dat/unit/Projectile.cpp
     src/dat/unit/Creatable.cpp
     src/dat/unit/Building.cpp
+    src/dat/unit/TrainLocation.cpp
     )
 
 set(RESOURCE_SRC
