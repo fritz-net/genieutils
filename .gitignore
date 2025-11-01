@@ -15,6 +15,3 @@ build/
 
 # generated files by doxygen
 doc/
-
-# extern directory (submodules)
-extern/
